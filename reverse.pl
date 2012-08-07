@@ -3,5 +3,7 @@
 
 reverse( [A], [A] ).
 reverse( [Head | Tail], NewList ) :-
-	append( List, [Head], NewList ),
-	reverse( Tail, List ).
+	reverse( Tail, List ),
+	append( List, [Head], NewList ).
+
+%hiiiii, jackass!
