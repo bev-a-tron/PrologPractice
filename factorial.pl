@@ -1,5 +1,6 @@
-factorial( 0, 0 ).
+factorial( 1, 1 ).
 factorial( NewNum, NewProduct ) :-
-	Product = NewProduct * NewNum,
-	Num = NewNum - 1,
-	factorial( Num, Product ).
+	Num is NewNum - 1,
+	Num >= 0,
+	factorial( Num, Product ),
+	NewProduct is Product * NewNum.
