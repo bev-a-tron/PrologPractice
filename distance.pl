@@ -24,20 +24,43 @@ distance_between( X, Y, Dist ) :- distance_between_atom( Y, X, Dist ).
 
 adjacent_cities( X, Y ) :- distance_between( X, Y, _ ).
 
-connected_cities( X, Y, [ X, Y ], [ Y, X ] ) :-
-	adjacent_cities( X, Y ).
+% try again: i think i get the order of first and end! 10 august 2012
+connected_cities( FirstCity, [ FirstCity, EndCity ] ) :-
+	adjacent_cities( FirstCity, EndCity ).
+connected_cities( FirstCity, [ FirstCity | RestOfCities ] ) :-
+	adjacent_cities( FirstCity, NextCity ),
+	connected_cities( NextCity, RestOfCities ).
+
+%connected_cities( FirstCity, List ) :-
+%	all_connected_cities( FirstCity, List ),
+%	not(member()),
+
+% how do i check whether 
+
+
+% make a predicate that will list out all paths out of EndCity
+%connected_cities( StartCity, [ StartCity, NextCity ]) :-
+%	adjacent_cities( StartCity, NextCity ).
+%connected_cities( StartCity, [ StartCity | Rest ] ) :-
+%	adjacent_cities( StartCity, NextCity ),
+%	connected_cities( NextCity, Rest ).
+
+%check_for_uniqueness( [], [], [] ).
+%check_for_uniqueness( ItemToCheck, [ Head | AlreadyInList ] ) :-
+	
+
+%connected_cities( X, Y, [ X, Y ], [ Y, X ] ) :-
+%	adjacent_cities( X, Y ).
 % make two lists, one going forward and one going backward
 % make sure they are inverse from one another
-connected_cities( X, Y, [ X | Rest1 ], [ Y | Rest2 ]) :-
-	reverse1( [ X | Rest1 ], [ Y | Rest2 ]),
-	connected_cities( X, Y, Rest1 , Rest2 ).
+%connected_cities( X, Y, [ X | Rest1 ], [ Y | Rest2 ]) :-
+%	reverse1( [ X | Rest1 ], [ Y | Rest2 ]),
+%	connected_cities( X, Y, Rest1 , Rest2 ).
 % missing some stuff here... this isn't good yet.
-
-
-reverse1( [], [] ).
-reverse1( [Head | Tail], NewList ) :-
-        reverse( Tail, List ),
-        append( List, [Head], NewList ).	
+%reverse1( [], [] ).
+%reverse1( [Head | Tail], NewList ) :-
+%        reverse( Tail, List ),
+%        append( List, [Head], NewList ).	
 
 %journey_between( Start, Finish, [ Start | Rest ] ) :-
 %	journey_between( Start, X, Rest  ).
