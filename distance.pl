@@ -1,3 +1,4 @@
+distance_between_atom( portsmouth, london, 56 ).
 distance_between_atom( oxford, london, 42 ).
 distance_between_atom( portsmouth, southampton, 23 ).
 distance_between_atom( portsmouth, brighton, 39 ).
@@ -8,6 +9,8 @@ distance_between_atom( winchester, oxford, 28 ).
 distance_between_atom( coventry, oxford, 35 ).
 distance_between_atom( coventry, birmingham, 18 ).
 distance_between_atom( coventry, nottingham, 68 ).
+
+/*
 distance_between_atom( oxford, nottingham, 75 ).
 distance_between_atom( birmingham, nottingham, 72 ).
 distance_between_atom( nottingham, sheffield, 26 ).
@@ -18,6 +21,8 @@ distance_between_atom( london, cambridge, 37 ).
 distance_between_atom( cambridge, oxford, 52 ).
 distance_between_atom( cambridge, norwich, 30 ).
 distance_between_atom( nottingham, norwich, 68 ).
+*/
+
 
 distance_between( X, Y, Dist ) :- distance_between_atom( X, Y, Dist ).
 distance_between( X, Y, Dist ) :- distance_between_atom( Y, X, Dist ).
@@ -25,17 +30,42 @@ distance_between( X, Y, Dist ) :- distance_between_atom( Y, X, Dist ).
 adjacent_cities( X, Y ) :- distance_between( X, Y, _ ).
 
 % try again: i think i get the order of first and end! 10 august 2012
-connected_cities( FirstCity, [ FirstCity, EndCity ] ) :-
-	adjacent_cities( FirstCity, EndCity ).
-connected_cities( FirstCity, [ FirstCity | RestOfCities ] ) :-
-	adjacent_cities( FirstCity, NextCity ),
-	connected_cities( NextCity, RestOfCities ).
 
-%connected_cities( FirstCity, List ) :-
-%	all_connected_cities( FirstCity, List ),
-%	not(member()),
+/*
+connected_cities( Destination, Journey ) :-
+	connected_cities( Destination, Journey, [] ).
 
-% how do i check whether 
+%%  11 August 2012:  WHY DOES THIS RETURN A BUNCH OF OXFORDS IN A ROW?
+connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited ) :-
+	not( member( Destination, AlreadyVisited )),
+	adjacent_cities( Destination, AnyCity ).
+connected_cities( Destination, [ Destination | RestOfCities ], AlreadyVisited ) :-
+	adjacent_cities( Destination, CurrentCity ),
+	not( member( CurrentCity, AlreadyVisited )),
+	connected_cities( CurrentCity, RestOfCities, [ CurrentCity | AlreadyVisited ]).
+*/
+
+journey_to( Destination, Journey ) :-
+        connected_cities( Destination, Journey, [Destination] ).
+
+%%  11 August 2012:  WHY DOES THIS RETURN A BUNCH OF OXFORDS IN A ROW?                                              
+connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited ) :-
+        adjacent_cities( Destination, AnyCity ),
+        not( member( AnyCity, AlreadyVisited )).
+connected_cities( CurrentCity, [ CurrentCity | RestOfCities ], AlreadyVisited ) :-
+	adjacent_cities( CurrentCity, NextCity ),
+        not( member( NextCity, AlreadyVisited )),
+	connected_cities( NextCity, RestOfCities, [ CurrentCity | AlreadyVisited ]).
+
+
+% try again: i think i get the order of first and end! 11 august 2012
+%connected_cities2( FirstCity, [ FirstCity, EndCity ], [ FirstCity ] ) :-
+%	adjacent_cities( FirstCity, EndCity ).
+%connected_cities2( FirstCity, [ FirstCity | RestOfCities ], [ FirstCity | RestAlreadyVisited ]) :-
+%	adjacent_cities( FirstCity, NextCity ),
+%	not( member( NextCity, RestAlreadyVisited )),
+%	connected_cities2( NextCity, RestOfCities, RestAlreadyVisited ).
+
 
 
 % make a predicate that will list out all paths out of EndCity
