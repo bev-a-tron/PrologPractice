@@ -9,8 +9,9 @@ distance_between_atom( winchester, oxford, 28 ).
 distance_between_atom( coventry, oxford, 35 ).
 distance_between_atom( coventry, birmingham, 18 ).
 distance_between_atom( coventry, nottingham, 68 ).
+distance_between_atom( chicago, london, 4000 ).
+distance_between_atom( chicago, oxford, 3940 ).
 
-/*
 distance_between_atom( oxford, nottingham, 75 ).
 distance_between_atom( birmingham, nottingham, 72 ).
 distance_between_atom( nottingham, sheffield, 26 ).
@@ -21,30 +22,38 @@ distance_between_atom( london, cambridge, 37 ).
 distance_between_atom( cambridge, oxford, 52 ).
 distance_between_atom( cambridge, norwich, 30 ).
 distance_between_atom( nottingham, norwich, 68 ).
-*/
+
 
 
 distance_between( X, Y, Dist ) :- distance_between_atom( X, Y, Dist ).
 distance_between( X, Y, Dist ) :- distance_between_atom( Y, X, Dist ).
 
 adjacent_cities( X, Y ) :- distance_between( X, Y, _ ).
+
+shorter_journey_exists( Origin, Destination, Distance ) :-
+	journey_between( Origin, Destination, _, ThisDistance ),
+	ThisDistance < Distance.
+
+shortest_journey_between( Origin, Destination, Journey, Distance ) :-
+	journey_between( Origin, Destination, Journey, Distance ),
+	not( shorter_journey_exists( Origin, Destination, Distance ) ).
 	
-journey_between( Origin, Destination, Journey) :-
-	journey_to( Destination, Journey ),
+journey_between( Origin, Destination, Journey, TotalDistance ) :-
+	journey_to( Destination, Journey, TotalDistance ),
 	last( Journey, Origin ).
 
-journey_to( Destination, Journey ) :-
-        connected_cities( Destination, Journey, [Destination] ).
+journey_to( Destination, Journey, TotalDistance ) :-
+        connected_cities( Destination, Journey, [Destination], TotalDistance ).
 
-connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited ) :-
-        adjacent_cities( Destination, AnyCity ),
+connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited, Distance ) :-
+        distance_between( Destination, AnyCity, Distance),
         not( member( AnyCity, AlreadyVisited )).
-connected_cities( CurrentCity, [ CurrentCity | RestOfCities ], AlreadyVisited ) :-
-	adjacent_cities( CurrentCity, NextCity ),
+
+connected_cities( CurrentCity, [ CurrentCity | RestOfCities ], AlreadyVisited, TotalDistance ) :-
+	distance_between( CurrentCity, NextCity, Distance ),
         not( member( NextCity, AlreadyVisited )),
-	connected_cities( NextCity, RestOfCities, [ CurrentCity | AlreadyVisited ]).
-
-
+	connected_cities( NextCity, RestOfCities, [ CurrentCity | AlreadyVisited ], DistanceRest ),
+	TotalDistance is DistanceRest + Distance.
 
 
 % --------------------- ceri suggestions: (scroll down) ----------------------
