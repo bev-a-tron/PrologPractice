@@ -29,26 +29,31 @@ distance_between( X, Y, Dist ) :- distance_between_atom( Y, X, Dist ).
 
 adjacent_cities( X, Y ) :- distance_between( X, Y, _ ).
 
-% try again: i think i get the order of first and end! 10 august 2012
-
-/*
-connected_cities( Destination, Journey ) :-
-	connected_cities( Destination, Journey, [] ).
+%% try again: i think i get the order of first and end! 10 august 2012
+%connected_cities( Destination, Journey ) :-
+%	connected_cities( Destination, Journey, [] ).
 
 %%  11 August 2012:  WHY DOES THIS RETURN A BUNCH OF OXFORDS IN A ROW?
-connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited ) :-
-	not( member( Destination, AlreadyVisited )),
-	adjacent_cities( Destination, AnyCity ).
-connected_cities( Destination, [ Destination | RestOfCities ], AlreadyVisited ) :-
-	adjacent_cities( Destination, CurrentCity ),
-	not( member( CurrentCity, AlreadyVisited )),
-	connected_cities( CurrentCity, RestOfCities, [ CurrentCity | AlreadyVisited ]).
-*/
+%connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited ) :-
+%	not( member( Destination, AlreadyVisited )),
+%	adjacent_cities( Destination, AnyCity ).
+%connected_cities( Destination, [ Destination | RestOfCities ], AlreadyVisited ) :-
+%	adjacent_cities( Destination, CurrentCity ),
+%	not( member( CurrentCity, AlreadyVisited )),
+%	connected_cities( CurrentCity, RestOfCities, [ CurrentCity | AlreadyVisited ]).
+
+
+%journey_between( Origin, Destination, Journey ) :-
+%	journey_to( Destination, Journey ),
+	%how do i ask that the last entry in Journey is Origin?
+	
+journey_between( Origin, Destination, Journey) :-
+	journey_to( Destination, Journey ),
+	last( Journey, Origin ).
 
 journey_to( Destination, Journey ) :-
         connected_cities( Destination, Journey, [Destination] ).
 
-%%  11 August 2012:  WHY DOES THIS RETURN A BUNCH OF OXFORDS IN A ROW?                                              
 connected_cities( Destination, [ Destination, AnyCity ], AlreadyVisited ) :-
         adjacent_cities( Destination, AnyCity ),
         not( member( AnyCity, AlreadyVisited )).
@@ -56,7 +61,7 @@ connected_cities( CurrentCity, [ CurrentCity | RestOfCities ], AlreadyVisited ) 
 	adjacent_cities( CurrentCity, NextCity ),
         not( member( NextCity, AlreadyVisited )),
 	connected_cities( NextCity, RestOfCities, [ CurrentCity | AlreadyVisited ]).
-
+	
 
 % try again: i think i get the order of first and end! 11 august 2012
 %connected_cities2( FirstCity, [ FirstCity, EndCity ], [ FirstCity ] ) :-
